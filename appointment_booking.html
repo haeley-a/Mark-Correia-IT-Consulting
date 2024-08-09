@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang = "en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Mark Correia IT Consulting</title>
+        <link rel='stylesheet' href="appointment-styles.css">
+    </head>
+    <body>
+        <header>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="contact_info.html">Contact Info</a></li>
+                    <li><a href="appointment_booking.html">Appointment Booking</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <section class="hero">
+                <h1>Mark Correia IT Consulting - Appointment Booking</h1>
+                <p>Making an appointment guarantees targeted, individualized attention and facilitates a comprehensive 
+                   discussion of your unique IT needs. By providing you and the consultant with ample time to prepare, it 
+                   improves efficiency and results in a more fruitful meeting. Effective task organization and expectation 
+                   management are facilitated by structured planning. Scheduling appointments helps to ensure that business 
+                   operations run smoothly during peak hours. Better results are achieved by facilitating clear communication 
+                   that covers all relevant details and aligns expectations.</p>
+                <hr/>
+                <form id="appointmentForm">
+                    <label for="appointmentTime">Appointment Time:</label>
+                    <input type="time" id="appointmentTime" name="appointmentTime" required>
+                    
+                    <label for="appointmentDate">Appointment Date:</label>
+                    <input type="date" id="appointmentDate" name="appointmentDate" required>
+                    
+                    <label for="appointmentLocation">Appointment Location:</label>
+                    <input type="text" id="appointmentLocation" name="appointmentLocation" required>
+                    
+                    <label for="appointmentReason">Reason for Appointment:</label>
+                    <textarea id="appointmentReason" name="appointmentReason" required></textarea>
+                    
+                    <button type="button" onclick="checkAvailability()">Submit</button>
+                </form>
+                
+                <div class="message" id="message"></div>
+            
+                <script>
+                    let appointments = {};
+            
+                    function updateAvailableDates() {
+                        const today = new Date();
+                        const newAppointments = {};
+                        for (let i = 0; i < 14; i++) {
+                            const date = new Date(today);
+                            date.setDate(today.getDate() + i);
+                            const day = date.getDay();
+                            if (day === 0 || day === 6) continue; 
+                            const dateStr = date.toISOString().split('T')[0];
+                            newAppointments[dateStr] = ["09:00", "10:00", "11:00", "13:00", "14:00", "15:00"];
+                        }
+                        appointments = newAppointments;
+                    }
+            
+                    updateAvailableDates();
+            
+                    function checkAvailability() {
+                        const date = document.getElementById('appointmentDate').value;
+                        const time = document.getElementById('appointmentTime').value;
+                        const location = document.getElementById('appointmentLocation').value;
+                        const reason = document.getElementById('appointmentReason').value;
+                        const messageDiv = document.getElementById('message');
+                        messageDiv.style.color = 'red';
+            
+                        if (!appointments[date]) {
+                            const availableDates = Object.keys(appointments).slice(0, 7).join(", ");
+                            messageDiv.textContent = `The selected date is unavailable. Available dates for the week are: ${availableDates}.`;
+                            return;
+                        }
+            
+                        if (!appointments[date].includes(time)) {
+                            const availableTimes = appointments[date].join(", ");
+                            messageDiv.textContent = `The selected time is unavailable. Available times for ${date} are: ${availableTimes}.`;
+                            return;
+                        }
+            
+                        if (!location) {
+                            messageDiv.textContent = 'Please insert a location.';
+                            return;
+                        }
+            
+                        if (!reason) {
+                            messageDiv.textContent = 'Please insert a reason for the appointment.';
+                            return;
+                        }
+            
+                        messageDiv.style.color = 'green';
+                        messageDiv.textContent = 'Appointment successfully booked!';
+                    }
+                </script>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; 2024 Mark Correia IT Consulting. All rights reserved.</p>
+        </footer>
+    </body>
+</html>
